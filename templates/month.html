@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>January</title>
+</head>
+
+<!-- Adding some style to table (OPTIONAL) -->
+<style type="text/css">
+    th:tr {
+        color: blue;
+
+    }
+
+    tr:nth-of-type(2n) {
+        border: 1px solid black;
+        background-color: rgba(150, 150, 150, 0.5);
+
+    }
+
+    td {
+        padding: 8px 8px;
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+
+    <table style="margin-left: 20px;">
+        <!-- Table headers -->
+        <th>
+            <tr style="color: green; ">
+                {% for day in days%}
+                <td>{{day}}</td>
+                {% endfor %}
+            </tr>
+        </th>
+
+        <!-- For loop logic of jinja template -->
+    
+        {% for i in range(0, 5) %}
+        <!-- table rows -->
+        <tr>
+            
+            {% for j in range(0, 7) %}
+            <td> <button onclick="myFunction()"> {{dates[(i*7)+j].day }} </button></td>
+            {% endfor %}
+        {% endfor %}
+        </tr>
+
+    </table>
+
+    <script>
+        // When the user clicks on div, open the popup
+        function myFunction() {
+          var popup = document.getElementById("myPopup");
+          popup.classList.toggle("show");
+        }
+        </script>
+</body>
+
+</html>
