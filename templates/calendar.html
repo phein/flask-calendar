@@ -8,11 +8,11 @@
         <h1 style="text-align:center"> Barservation </h1>
     </div>
     <nav class="navbar navbar-light bg-light">
-        <form action="{{url_for('prevYear')}}" method="POST">
+        <form action="{{url_for('prevYear', month=month, year=year)}}" method="POST">
           <button class="btn btn-sm btn-outline-secondary text-secondary" type="submit">Prev</button>
         </form>
         <a class="navbar-brand text-secondary">{{ year }}</a>
-        <form action="{{url_for('nextYear')}}" method="POST">
+        <form action="{{url_for('nextYear', month=month, year=year)}}" method="POST">
           <button class="btn btn-sm btn-outline-secondary text-secondary" type="submit">Next</button>
         </form>
     </nav>
@@ -20,13 +20,12 @@
     <div class="p-5 text-center bg-light">
         <table class="table table-sm">
             <tbody>
-                {% for monthNames in months|batch(3) %}
+                {% for monthNums in months|batch(3) %}
                 <tr>
-                    {% for monthName in monthNames %}
-                    <form action="{{url_for('setMonth')}}" method="POST">
-                        <input type="hidden"  name="monthNum" value= {{monthName}} >
+                    {% for monthNum in monthNums %}
+                    <form action="{{url_for('setMonth', month=monthNum, year=year)}}" method="POST">
                         <button class="btn btn-light btn-outline-light text-primary">
-                            {{ months[monthName] }}
+                            {{ months[monthNum] }}
                         </button>
                     </form>
                     {% endfor %}
@@ -48,14 +47,14 @@
                 {% for i in range(0, 5) %}
                 <tr>
                     {% for j in range(0, 7) %}
+                    <th>
                     <form action="{{url_for('reserve')}}" method="POST">
-                        <input type="HIDDEN"  name="datesnum" value={{dates[(i*7)+j]}}>
-                        <th>
-                            <button type="submit" class="btn btn-sm">
-                                {{dates[(i*7)+j].day }}
-                            </button>
-                        </th>
+                        <input type="hidden"  name="datesnum" value={{dates[(i*7)+j]}}>
+                        <button type="submit" class="btn btn-sm">
+                            {{dates[(i*7)+j].day }}
+                        </button>
                     </form>
+                    </th>
                     {% endfor %}
                 </tr>
                 {% endfor %}

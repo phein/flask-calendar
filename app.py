@@ -5,9 +5,9 @@ from models import create_post, get_reserveList
 app =Flask(__name__)
 
 myclendar = calendar.Calendar(calendar.SUNDAY)
-year = datetime.datetime.today().year
-month = datetime.datetime.today().month
-dates = list(myclendar.itermonthdates(year,month))
+# year = datetime.datetime.today().year
+# month = datetime.datetime.today().month
+# dates = list(myclendar.itermonthdates(year,month))
 months = {
     1 :'January'   ,
     2 :'February'  ,
@@ -34,33 +34,39 @@ days = ['Sunday',
 
 @app.route('/')
 def index():
+    year = datetime.datetime.today().year
+    month = datetime.datetime.today().month
+    dates = list(myclendar.itermonthdates(year,month))
     return render_template(
         'calendar.html', months = months, dates = dates, days = days, month=month, year=year
         )
 
-@app.route('/prevyear', methods=['GET', 'POST'])
-def prevYear():
-    global year, dates, month
-    if request.method == 'POST':
-        year = year-1
-        dates = list(myclendar.itermonthdates(year, month))
-    return redirect(url_for('index'))
 
-@app.route('/nextyear', methods=['GET', 'POST'])
-def nextYear():
-    global year, dates, month
-    if request.method == 'POST':
-        year = year+1
-        dates = list(myclendar.itermonthdates(year, month))
-    return redirect(url_for('index'))
+@app.route('/newcalendar/<int:month>/<int:year>')
+def newCalendar(month, year):
+    dates = list(myclendar.itermonthdates(year,month))
+    return render_template(
+        'calendar.html', months = months, dates = dates, days = days, month=month, year=year
+        )
 
-@app.route('/setMonth',methods=['GET','POST'])
-def setMonth():
+
+@app.route('/prevyear/<int:month>/<int:year>', methods=['GET', 'POST'])
+def prevYear(month, year):
     if request.method == 'POST':
-        global dates, year, month
-        month = int(request.form.get('monthNum'))
-        dates = list(myclendar.itermonthdates(year, month))
-    return redirect(url_for('index'))
+        new_year = year-1
+    return redirect(url_for('newCalendar', year=new_year, month=month))
+
+@app.route('/nextyear/<int:month>/<int:year>', methods=['GET', 'POST'])
+def nextYear(month, year):
+    if request.method == 'POST':
+        new_year = year+1
+    return redirect(url_for('newCalendar', year=new_year, month=month))
+
+@app.route('/setMonth/<int:month>/<int:year>',methods=['GET','POST'])
+def setMonth(month, year):
+    if request.method == 'POST':
+        new_month = month
+    return redirect(url_for('newCalendar', month=new_month, year=year))
 
 
 @app.route("/postreserve",methods=['GET','POST'])
@@ -74,7 +80,6 @@ def postReserve():
         create_post(datesNum,fname,lname,email)
     
     return redirect(url_for('index'))
-
 
 @app.route("/reserve", methods=['GET','POST'])
 def reserve():
